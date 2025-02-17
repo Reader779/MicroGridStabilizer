@@ -102,9 +102,55 @@ with monitor_col1:
     st.plotly_chart(create_stability_gauge(
         display_voltage, 230, 210, 250, "Voltage (V)"))
 
+    # Add voltage range indicators
+    v_status = (
+        "🟢 Optimal" if 220 <= display_voltage <= 240 else
+        "🟡 Warning" if (215 <= display_voltage < 220) or (240 < display_voltage <= 245) else
+        "🔴 Critical"
+    )
+    v_color = (
+        "green" if 220 <= display_voltage <= 240 else
+        "orange" if (215 <= display_voltage < 220) or (240 < display_voltage <= 245) else
+        "red"
+    )
+
+    st.markdown(f"""
+    ### Current Voltage: <span style='color: {v_color}'>{display_voltage:.1f}V</span> ({v_status})
+
+    #### Voltage Ranges:
+    - 🟢 **220V - 240V**: Optimal Range
+    - 🟡 **215V - 220V** or **240V - 245V**: Warning Range
+    - 🔴 **<215V** or **>245V**: Critical Range
+
+    Current Deviation: {abs(display_voltage - 230):.1f}V from nominal (230V)
+    """, unsafe_allow_html=True)
+
 with monitor_col2:
     st.plotly_chart(create_stability_gauge(
         display_frequency, 50, 49, 51, "Frequency (Hz)"))
+
+    # Add frequency range indicators
+    f_status = (
+        "🟢 Optimal" if 49.8 <= display_frequency <= 50.2 else
+        "🟡 Warning" if (49.5 <= display_frequency < 49.8) or (50.2 < display_frequency <= 50.5) else
+        "🔴 Critical"
+    )
+    f_color = (
+        "green" if 49.8 <= display_frequency <= 50.2 else
+        "orange" if (49.5 <= display_frequency < 49.8) or (50.2 < display_frequency <= 50.5) else
+        "red"
+    )
+
+    st.markdown(f"""
+    ### Current Frequency: <span style='color: {f_color}'>{display_frequency:.2f}Hz</span> ({f_status})
+
+    #### Frequency Ranges:
+    - 🟢 **49.8Hz - 50.2Hz**: Optimal Range
+    - 🟡 **49.5Hz - 49.8Hz** or **50.2Hz - 50.5Hz**: Warning Range
+    - 🔴 **<49.5Hz** or **>50.5Hz**: Critical Range
+
+    Current Deviation: {abs(display_frequency - 50):.2f}Hz from nominal (50Hz)
+    """, unsafe_allow_html=True)
 
 # Time series visualization
 st.header("Historical Data Analysis")
